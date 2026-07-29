@@ -246,10 +246,10 @@ def from_dlpack(
         if copy is not _undef:
             raise ValueError("The copy argument to from_dlpack requires at least version 2023.12 of the array API")
 
-    if device is not _undef:
-        _check_device(device)
+    if device is _undef or device is None:
+        device = x.device if isinstance(x, Array) else None
     else:
-        device = None
+        _check_device(device)
 
     if copy in [_undef, None]:
         # numpy 1.26 does not have the copy= arg
