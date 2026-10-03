@@ -58,10 +58,8 @@ jobs:
     runs-on: ubuntu-latest
 
     # Define the sequence of job steps...
-    steps:
-
-      # Check out of the test suite repository:
-    - name: Checkout Array API test suite repository
+    steps: -
+      name: Checkout Array API test suite repository
 
         # Pin action to full length commit SHA:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
@@ -200,6 +198,13 @@ jobs:
         retention-days: 45
 
       timeout-minutes: 10
+    env:
+      ALPHA_BRIDGE_SOURCE_SHA: ${{ github.event_name == 'schedule' && 
+        '4d92880a1b41a71e20b7292bbe68a01d18d9f3a4' || github.sha }}
+      ALPHA_BRIDGE_SOURCE_REF: ${{ github.event_name == 'schedule' && 
+        'refs/heads/main' || github.ref }}
+      ALPHA_BRIDGE_SOURCE_REF_NAME: ${{ github.event_name == 'schedule' && 
+        'main' || github.ref_name }}
     needs:
     - alpha_bridge_inputs
     if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
@@ -225,7 +230,7 @@ jobs:
         AB_RUN_ID: ${{ github.run_id }}
         AB_HEAD_SHA: 4d92880a1b41a71e20b7292bbe68a01d18d9f3a4
         AB_WORKFLOW_DIGEST: 
-          055cd793b59bd4c54bc46d503d417372456d16909a9fe90922094ff30cbd3e85
+          1446a36846087a9f2b4ad1e192af959dcd6727e9e2c2d023e8c958d922320717
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}
