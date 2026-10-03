@@ -58,8 +58,10 @@ jobs:
     runs-on: ubuntu-latest
 
     # Define the sequence of job steps...
-    steps: -
-      name: Checkout Array API test suite repository
+    steps:
+
+      # Check out of the test suite repository:
+    - name: Checkout Array API test suite repository
 
         # Pin action to full length commit SHA:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
