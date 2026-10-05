@@ -1,20 +1,41 @@
 {
   "definition_blob_sha1": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "d0cf89303388ac1271c908436e9f4bfe75bae884",
-    ".github/workflows/report-compliance.yml": "aba50a25f9798dd08ad37b6656704222708f6b07"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "d19efeb3bd029beb4c50fd874010d2b930d20715",
+    ".github/workflows/array-api-tests.yml": "5b7a3cf91c6b48b73159d98d06a37028e6d212e1",
+    ".github/workflows/dependabot-auto-merge.yml": "8174b261353da85591722de5aa840e1c8b7f2e5a",
+    ".github/workflows/docs-build.yml": "185937695b84ce9cd3333ad49b45d97833afc73d",
+    ".github/workflows/docs-deploy.yml": "aa99311a7d1cd85ddabb11afd27d3d6ae23fe867",
+    ".github/workflows/publish-package.yml": "88a9653fece08ed8b9a44879238e3c494e8b1eb1",
+    ".github/workflows/report-compliance.yml": "b630c8d1410b77546aa048393797175a1de66622",
+    ".github/workflows/ruff.yml": "9e17c4fbbf1f242c3f78aa31aeac3f616dbab0af",
+    ".github/workflows/tests.yml": "872ad97c3fa40ddd4321f16bdd1d83d93241622b"
   },
   "definition_sha256": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "99e25329cff2a8ae245f2f99850472bdd82f571c3bc33fadfc5ac11b9f29cb7e",
-    ".github/workflows/report-compliance.yml": "1d8190d09f59763e003dd304035667447b0ec4e14ad572c8bd06904c1468303e"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "8fde9e2f5e1b37bbbb22794427ac6d217d8b18bc857606edd0b072e89c58b436",
+    ".github/workflows/array-api-tests.yml": "59b52798cda829a8e4a26d3f7cf358120ecedac58049e932b166c63361a37bbc",
+    ".github/workflows/dependabot-auto-merge.yml": "7921f9f351780629013c0893ff5a9d868ad1f6b7b7946ae3b627f27bb6e2765b",
+    ".github/workflows/docs-build.yml": "db1ed9329a7414f2f3078e1722b82fe460f41db36f7ec32d8eeba6f95db2ebea",
+    ".github/workflows/docs-deploy.yml": "a0d290cdb26da488717fbed73f13812636a08378c13f0f626b3d578418c716dd",
+    ".github/workflows/publish-package.yml": "04b53febe63aa3d4ed324bebf499790ce351d21fbfdc0d5903dfd87237ce67a7",
+    ".github/workflows/report-compliance.yml": "fd9dcab3f9a0814e4b61c9105f6efe778de9dd11d75ddb75664c407c99216711",
+    ".github/workflows/ruff.yml": "f8b64580f8005b53eae53b7542e557cd0a5488eec8585c14e69383aecf6032c1",
+    ".github/workflows/tests.yml": "573def0cdb30b9f11884aec87dc95ba8b36acbddf38b7596922a441656b437c1"
   },
-  "generator_sha256": "8bff038bcb711330ba78bf433a2923d57d4ddfeedd59b8324e44e2a59f6b0389",
+  "generator_sha256": "f9d11fba5b604bac754f7ab7e40ccde549adf8e029da2ca91ed14e9ab94c0775",
   "schema": "alpha-bridge/fork-ci",
   "source_branch": "main",
-  "source_commit": "4d92880a1b41a71e20b7292bbe68a01d18d9f3a4",
+  "source_commit": "ef5d7dbb8d5585438c27a0ba167bc7e32361c104",
   "source_repository": "data-apis/array-api-strict",
   "version": 1,
   "workflows": [
     ".github/workflows/alpha-bridge-ci-verify.yml",
-    ".github/workflows/report-compliance.yml"
+    ".github/workflows/array-api-tests.yml",
+    ".github/workflows/dependabot-auto-merge.yml",
+    ".github/workflows/docs-build.yml",
+    ".github/workflows/docs-deploy.yml",
+    ".github/workflows/publish-package.yml",
+    ".github/workflows/report-compliance.yml",
+    ".github/workflows/ruff.yml",
+    ".github/workflows/tests.yml"
   ]
 }
