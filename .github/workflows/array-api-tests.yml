@@ -3,8 +3,8 @@ name: Array API Tests
 on: [push, pull_request]
 
 env:
-  PYTEST_ARGS: -v -rxXfE --hypothesis-disable-deadline --max-examples 500 -n 4
-  API_VERSIONS: 2023.12 2024.12 2025.12
+  PYTEST_ARGS: "-v -rxXfE --hypothesis-disable-deadline --max-examples 500 -n 4"
+  API_VERSIONS: "2023.12 2024.12 2025.12"
 
 jobs:
   array-api-tests:
@@ -16,12 +16,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ['3.10', '3.13', '3.14']
-        numpy-version: ['1.26', latest, dev]
+        numpy-version: ['1.26', 'latest', 'dev']
         exclude:
         - python-version: '3.10'
-          numpy-version: latest
+          numpy-version: 'latest'
         - python-version: '3.10'
-          numpy-version: dev
+          numpy-version: 'dev'
         - python-version: '3.13'
           numpy-version: '1.26'
         - python-version: '3.14'
@@ -80,8 +80,8 @@ jobs:
         done
     needs:
     - alpha_bridge_inputs
-    if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
-      }}
+    if: |-
+      ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
   alpha_bridge_inputs:
     name: CI input check
     runs-on: ubuntu-latest
@@ -107,7 +107,7 @@ jobs:
         AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
           'workflow_run') && 'refs/heads/main' || github.ref }}
         AB_WORKFLOW_DIGEST: 
-          58f358ba803ac20bb3b99de4d4526ed3ab5b1e8f8ae4491d0efa7ebaf7c42f0a
+          5c73d15d4105a511f0f566be2b733d8f5085bca9ee7124a17860aa79d3b2c1aa
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}
