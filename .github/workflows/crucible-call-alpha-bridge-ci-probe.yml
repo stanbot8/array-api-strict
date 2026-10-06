@@ -1,143 +1,38 @@
-name: publish distributions
+name: CI input probe
 on:
-  push:
-    branches:
-    - main
-    tags:
-    - '[0-9]+.[0-9]+'
-    - '[0-9]+.[0-9]+.[0-9]+'
-  pull_request:
-    branches:
-    - main
-  release:
-    types: [published]
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      publish:
-        type: choice
-        description: 'Publish to TestPyPI?'
-        options:
-        - false
-        - true
-
-concurrency:
-  group: ${{ github.workflow }}-${{ ((github.event_name == 'schedule' || 
-    github.event_name == 'workflow_run') && 'refs/heads/main' || github.ref) }}
-  cancel-in-progress: ${{ (github.event_name == 'workflow_dispatch' || 
-    github.run_attempt > 1) && (true) }}
-
+      probe:
+        type: string
+        required: true
 jobs:
-  build:
-    name: Build Python distribution
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v7.0.1
-      with:
-        fetch-depth: 0
-
-        ref: ${{ (github.event_name == 'schedule' || github.event_name == 
-          'workflow_run') && 'ef5d7dbb8d5585438c27a0ba167bc7e32361c104' || 
-          github.sha }}
-    - name: Set up Python
-      uses: actions/setup-python@v7.0.0
-      with:
-        python-version: '3.x'
-
-    - name: Install python-build and twine
-      run: |
-        python -m pip install --upgrade pip setuptools
-        python -m pip install build twine
-        python -m pip list
-
-    - name: Install dependencies
-      run: |-
-        python -m pip install -r requirements.txt
-
-
-    - name: Build a wheel and a sdist
-      run: |
-        PYTHONWARNINGS=error,default::DeprecationWarning python -m build .
-
-    - name: Verify the distribution
-      run: |-
-        twine check --strict dist/*
-
-
-    - name: List contents of sdist
-      run: |-
-        python -m tarfile --list dist/array_api_strict-*.tar.gz
-
-
-    - name: List contents of wheel
-      run: |-
-        python -m zipfile --list dist/array_api_strict-*.whl
-
-
-    - name: Upload distribution artifact
-      uses: actions/upload-artifact@v7
-      with:
-        name: dist-artifact
-        path: dist
-
+  nested0:
+    uses: ./.github/workflows/alpha-bridge-ci-consumer.yml
+    with:
+      probe: ${{ inputs.probe }}
+      slot: '0'
     needs:
     - alpha_bridge_inputs
     if: |-
       ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
-  publish:
-    name: Publish Python distribution to (Test)PyPI
-    if: |-
-      ${{ (github.event_name != 'pull_request' && github.repository == 'data-apis/array-api-strict' && github.ref_type == 'tag') && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
+  nested1:
+    uses: ./.github/workflows/alpha-bridge-ci-consumer.yml
+    with:
+      probe: ${{ inputs.probe }}
+      slot: '1'
     needs:
-    - build
     - alpha_bridge_inputs
-    runs-on: ubuntu-latest
-    # Mandatory for publishing with a trusted publisher
-    # c.f. https://docs.pypi.org/trusted-publishers/using-a-publisher/
-    permissions:
-      id-token: write
-      contents: write
-    # Restrict to the environment set for the trusted publisher
-    environment:
-      name: publish-package
-
-    steps:
-    - name: Download distribution artifact
-      uses: actions/download-artifact@v8
-      with:
-        name: dist-artifact
-        path: dist
-
-    - name: List all files
-      run: |-
-        ls -lh dist
-
-
-    # - name: Publish distribution 📦 to Test PyPI
-    #   # Publish to TestPyPI on tag events of if manually triggered
-    #   # Compare to 'true' string as booleans get turned into strings in the console
-    #   if: >-
-    #     (github.event_name == 'push' && startsWith(github.ref, 'refs/tags'))
-    #     || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')
-    #   uses: pypa/gh-action-pypi-publish@v1.14.2
-    #   with:
-    #     repository-url: https://test.pypi.org/legacy/
-    #     print-hash: true
-
-    - name: Publish distribution 📦 to PyPI
-      if: github.event_name == 'push' && startsWith(((github.event_name == 
-        'schedule' || github.event_name == 'workflow_run') && 'refs/heads/main' 
-        || github.ref), 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@v1.14.2
-      with:
-        print-hash: true
-
-    - name: Create GitHub Release from a Tag
-      uses: softprops/action-gh-release@v3.0.3
-      if: startsWith(((github.event_name == 'schedule' || github.event_name == 
-        'workflow_run') && 'refs/heads/main' || github.ref), 'refs/tags/')
-      with:
-        files: dist/*
+    if: |-
+      ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
+  nested2:
+    uses: ./.github/workflows/alpha-bridge-ci-consumer.yml
+    with:
+      probe: ${{ inputs.probe }}
+      slot: '2'
+    needs:
+    - alpha_bridge_inputs
+    if: |-
+      ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
   alpha_bridge_inputs:
     name: CI input check
     runs-on: ubuntu-latest
@@ -145,7 +40,7 @@ jobs:
       actions: read
       contents: read
     concurrency:
-      group: alpha-bridge-inputs-15810908f2b0b43b-${{ github.workflow }}-${{ 
+      group: alpha-bridge-inputs-79967559e6c019b6-${{ github.workflow }}-${{ 
         github.sha }}-${{ github.event.schedule || github.event_name }}
       cancel-in-progress: false
       queue: max
@@ -158,15 +53,12 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         AB_REPOSITORY: ${{ github.repository }}
         AB_RUN_ID: ${{ github.run_id }}
-        AB_HEAD_SHA: ${{ (github.event_name == 'schedule' || github.event_name 
-          == 'workflow_run') && 'ef5d7dbb8d5585438c27a0ba167bc7e32361c104' || 
-          github.sha }}
-        AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
-          'workflow_run') && 'refs/heads/main' || github.ref }}
+        AB_HEAD_SHA: ${{ github.sha }}
+        AB_REF: ${{ github.ref }}
         AB_WORKFLOW_DIGEST: 
-          75c944a120bf0ee76ed3450bb76c620a06f57a5f78334686bd563a66a425d731
-        AB_EVENT: ${{ github.event_name }}
-        AB_SCHEDULE: ${{ github.event.schedule || '' }}
+          bd367cba8e8810e351ab7c5db42453bb5c3cdfbec864efe5672bbab3a0053290
+        AB_EVENT: schedule
+        AB_SCHEDULE: alpha-bridge verification
         AB_VARIABLES: ${{ toJSON(vars) }}
         AB_INPUTS: ${{ toJSON(inputs) }}
         AB_DEFAULT_PERMISSIONS: read
